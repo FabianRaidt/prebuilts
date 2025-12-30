@@ -33,6 +33,11 @@ if [ -f ./buildsystem/BINARY_FILES/cam_overlay.bin ]; then
     cp ./buildsystem/BINARY_FILES/cam_overlay.bin ./cam_overlay/
 fi
 
+# Copy usbreset
+if [ -f ./buildsystem/BINARY_FILES/usbreset ]; then
+    cp ./buildsystem/BINARY_FILES/usbreset ./usbreset/
+fi
+
 cd csmt
 md5sum $(basename crankshaft) > crankshaft.md5
 cd ..

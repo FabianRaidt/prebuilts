@@ -9,21 +9,21 @@ if [ ! -d BINARY_FILES ]; then
 fi
 
 # Copy aasdk so's
-if [ -f ./aasdk/lib/libaasdk.so ]; then
-    cp ./aasdk/lib/libaasdk.so ./BINARY_FILES/
+if [ -f ./aasdk_build/lib/libaasdk.so ]; then
+    cp ./aasdk_build/lib/libaasdk.so ./BINARY_FILES/
 fi
 
-if [ -f ./aasdk/lib/libaasdk_proto.so ]; then
-    cp ./aasdk/lib/libaasdk_proto.so ./BINARY_FILES/
+if [ -f ./aasdk_build/lib/libaap_protobuf.so ]; then
+    cp ./aasdk_build/lib/libaap_protobuf.so ./BINARY_FILES/libaasdk_proto.so
 fi
 
 # Copy openauto
-if [ -f ./openauto/bin/autoapp ]; then
-    cp ./openauto/bin/autoapp ./BINARY_FILES/
+if [ -f ./openauto_build/bin/autoapp ]; then
+    cp ./openauto_build/bin/autoapp ./BINARY_FILES/
 fi
 
-if [ -f ./openauto/bin/btservice ]; then
-    cp ./openauto/bin/btservice ./BINARY_FILES/
+if [ -f ./openauto_build/bin/btservice ]; then
+    cp ./openauto_build/bin/btservice ./BINARY_FILES/
 fi
 
 # Copy gpio2kbd
@@ -34,6 +34,11 @@ fi
 # Copy cam_overlay.bin
 if [ -f ./cam_overlay/cam_overlay.bin ]; then
     cp ./cam_overlay/cam_overlay.bin ./BINARY_FILES/
+fi
+
+# Copy usbreset
+if [ -f ./usbreset/usbreset ]; then
+    cp ./usbreset/usbreset ./BINARY_FILES/
 fi
 
 # Create compressed qt5

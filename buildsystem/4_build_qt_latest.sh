@@ -1,31 +1,54 @@
 #!/bin/bash
 
 # Set variables
-QT_URL=https://download.qt.io/official_releases/qt/
+QT_URL=https://download.qt.io/archive/qt/
 QT_VERSION=$(curl -s $QT_URL | grep -oE -m1 href=\"[0-9\.]+ |  tr -d 'href="')
 QT_VERSION='5.15'
 QT_FULL_VERSION=$(curl -s $QT_URL$QT_VERSION/ | grep -oE -m1 href=\"[0-9\.]+ |  tr -d 'href="')
-QT_FULL_VERSION='5.15.1'
-QT_FILENAME=qt-everywhere-src-${QT_FULL_VERSION}.tar.xz
+QT_FULL_VERSION='5.15.18'
+QT_FILENAME=qt-everywhere-opensource-src-${QT_FULL_VERSION}.tar.xz
 DEVICE_OPT=linux-rasp-pi3-g++
-if [ -z "${CPU_CORES_COUNT}"]; then
-  CPU_CORES_COUNT=`grep -c ^processor /proc/cpuinfo`
+if [ -z "${CPU_CORES_COUNT}" ]; then
+    CPU_CORES_COUNT=`grep -c ^processor /proc/cpuinfo`
 fi
 # Lookup for PI version
 PIVERSION=`grep ^Model /proc/cpuinfo` 
-if [[ ${PIVERSION} =~ 'Raspberry Pi 3' ]]; then
-   DEVICE_OPT=linux-rasp-pi3-vc4-g++
+if [[ ${PIVERSION} =~ 'Raspberry Pi 5' ]]; then
+   DEVICE_OPT=linux-generic-g++
    KMS='-kms'
+   ARCH_TRIPLE=aarch64-linux-gnu
+   PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig
 elif [[ ${PIVERSION} =~ 'Raspberry Pi 4' ]]; then
    DEVICE_OPT=linux-rasp-pi4-v3d-g++
    KMS='-kms'
+   ARCH_TRIPLE=aarch64-linux-gnu
+   PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig
+elif [[ ${PIVERSION} =~ 'Raspberry Pi 3' ]]; then
+   DEVICE_OPT=linux-rasp-pi3-vc4-g++
+   KMS='-kms'
+   ARCH_TRIPLE=arm-linux-gnueabihf
+   PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/share/pkgconfig
 elif [[ ${PIVERSION} =~ 'Raspberry Pi 2' ]]; then
    DEVICE_OPT=linux-rasp-pi2-g++
    KMS='-kms'
+   ARCH_TRIPLE=arm-linux-gnueabihf
+   PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/share/pkgconfig
 else
    DEVICE_OPT=linux-rasp-pi-g++
    KMS='-kms'
+   ARCH_TRIPLE=arm-linux-gnueabihf
+   PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/share/pkgconfig
 fi
+
+# Detect host arch and only set CROSS_COMPILE when cross-building
+HOST_ARCH=$(uname -m)
+if [ "$HOST_ARCH" = "aarch64" ]; then
+  echo "Setting CROSS_COMPILE_OPTION to NONE"
+  CROSS_COMPILE_OPTION=""
+else
+  CROSS_COMPILE_OPTION="-device-option CROSS_COMPILE=${ARCH_TRIPLE}-"
+fi
+
 # Set current folder as home
 HOME="`cd $0 >/dev/null 2>&1; pwd`" >/dev/null 2>&1
 
@@ -58,10 +81,8 @@ fi
 cd ${HOME}/qt${QT_FILE_VERSION}_build
 
 QT_QPA_EGLFS_KMS_CONFIG=${HOME}/eglfs.json
-PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/share/pkgconfig \
-${HOME}/qt${QT_FILE_VERSION}/src/qt-everywhere-src-${QT_FULL_VERSION}/configure -device ${DEVICE_OPT} \
--device-option CROSS_COMPILE=arm-linux-gnueabihf- \
--sysroot / \
+PKG_CONFIG_LIBDIR=${PKG_CONFIG_PATH} \
+${HOME}/qt${QT_FILE_VERSION}/src/qt-everywhere-src-${QT_FULL_VERSION}/configure \
 -opengl es2 -eglfs -linuxfb ${KMS} -xcb \
 -prefix /usr/local/qt5 \
 -opensource -confirm-license \
