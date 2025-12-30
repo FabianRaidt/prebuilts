@@ -1,4 +1,6 @@
 buildsystem/*/**
 buildsystem/*.log
-debug.logbuildsystem/openauto/
+debug.log
+buildsystem/openauto/
 buildsystem/gpio2kbd/
+buildsystem/aasdk/
