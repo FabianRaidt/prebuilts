@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "${AASDK_GIT_REPO}" ]; then
-  AASDK_GIT_REPO='https://github.com/opencardev/aasdk.git'
+  AASDK_GIT_REPO='https://github.com/FabianRaidt/aasdk.git'
 fi
 
 # Set current folder as home
@@ -13,17 +13,7 @@ cd $HOME
 # clone git repo
 if [ ! -d aasdk ]; then
   echo "Cloning aasdk repository..."
-  # prefer branch 'newdev' if present, otherwise fall back to 'main' or default
-  if git ls-remote --heads ${AASDK_GIT_REPO} newdev | grep -q refs/heads/newdev; then
-    echo "Found branch 'newdev' - cloning it"
-    git clone -b newdev ${AASDK_GIT_REPO} || { echo "git clone failed"; exit 1; }
-  elif git ls-remote --heads ${AASDK_GIT_REPO} main | grep -q refs/heads/main; then
-    echo "Branch 'newdev' not found - cloning 'main'"
-    git clone -b main ${AASDK_GIT_REPO} || { echo "git clone failed"; exit 1; }
-  else
-    echo "Branch 'newdev' and 'main' not found - cloning default branch"
-    git clone ${AASDK_GIT_REPO} || { echo "git clone failed"; exit 1; }
-  fi
+  git clone -b main ${AASDK_GIT_REPO} || { echo "git clone failed"; exit 1; }
 else
   echo "Updating existing aasdk repository..."
   cd aasdk

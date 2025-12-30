@@ -3,7 +3,7 @@ if [ -z "${CPU_CORES_COUNT}" ]; then
   CPU_CORES_COUNT=`grep -c ^processor /proc/cpuinfo`
 fi
 if [ -z "${OPENAUTO_GIT_REPO}" ]; then
-  OPENAUTO_GIT_REPO='https://github.com/opencardev/openauto.git'
+  OPENAUTO_GIT_REPO='https://github.com/FabianRaidt/openauto.git'
 fi
 
 # Detect architecture
@@ -27,7 +27,7 @@ cd $HOME
 
 # clone git repo
 if [ ! -d openauto ]; then
-    git clone -b crankshaft-ng ${OPENAUTO_GIT_REPO}
+    git clone -b main ${OPENAUTO_GIT_REPO}
 else
     cd openauto
     git reset --hard
