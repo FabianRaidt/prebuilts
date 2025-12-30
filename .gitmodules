@@ -1,0 +1,8 @@
+[submodule "buildsystem/aasdk"]
+	path = buildsystem/aasdk
+	url = https://github.com/FabianRaidt/aasdk.git
+	branch = main
+[submodule "buildsystem/openauto"]
+	path = buildsystem/openauto
+	url = https://github.com/FabianRaidt/openauto.git
+	branch = main
